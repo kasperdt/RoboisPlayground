@@ -10,60 +10,61 @@ import org.junit.Test;
 import inf112.skeleton.app.GameMovement;
 import inf112.skeleton.app.objects.Board;
 import inf112.skeleton.app.objects.Robot;
+import inf112.skeleton.app.utilities.CardinalDirection;
+import inf112.skeleton.app.utilities.RelativeDirection;
+import inf112.skeleton.app.utilities.CardinalityUtility;
 
 public class RobotShould {
-	int robotX, robotY = 5;
-	Robot robot = new Robot(robotX, robotY, 0);
-
-	Board brd;
+	private int robotX, robotY;
+	private Robot robot;
+	private Board brd;
 
 	@Before
 	public void initialize() throws FileNotFoundException {
-		brd = new Board();
+		robotX = robotY = 5;
+		robot = new Robot(robotX, robotY, CardinalDirection.NORTH);
+		brd = new Board("bt.csv");
 	}
 
-	private void checkMovement(int steps, int direction) {
+	/**
+	 * MOVEMENT
+	 */
+	private void checkMovement(int steps, CardinalDirection direction) {
 		robot.setDirection(direction);
-		GameMovement.move(steps, robot, brd);
+		GameMovement.move(steps, robot, brd, null);
 
-		if (direction == 0) {
+		if (direction == CardinalDirection.NORTH) {
 			assertEquals(robotY - steps, robot.getY());
-		} else if (direction == 1) {
+		} else if (direction == CardinalDirection.EAST) {
 			assertEquals(robotX + steps, robot.getX());
-		} else if (direction == 2) {
+		} else if (direction == CardinalDirection.SOUTH) {
 			assertEquals(robotY + steps, robot.getY());
-		} else if (direction == 3) {
+		} else if (direction == CardinalDirection.WEST) {
 			assertEquals(robotX - steps, robot.getX());
 		}
 	}
 
-	private void checkRotation(int rotation, int direction) {
-		robot.setDirection(direction);
-		robot.rotate(rotation);
-		assertEquals((direction + rotation % 4 + 4) % 4, robot.getDirection());
-	}
-
 	/**
-	 * MOVEMENT Move one forward in each direction
+	 * Move one forward in each direction
 	 */
 	@Test
 	public void move1UpOnMove1Direction0() {
-		checkMovement(1, 0);
+		checkMovement(1, CardinalDirection.NORTH);
 	}
 
 	@Test
 	public void move1RightOnMove1Direction1() {
-		checkMovement(1, 1);
+		checkMovement(1, CardinalDirection.EAST);
 	}
 
 	@Test
 	public void move1DownOnMove1Direction2() {
-		checkMovement(1, 2);
+		checkMovement(1, CardinalDirection.SOUTH);
 	}
 
 	@Test
 	public void move1LeftOnMove1Direction3() {
-		checkMovement(1, 3);
+		checkMovement(1, CardinalDirection.WEST);
 	}
 
 	/**
@@ -71,22 +72,22 @@ public class RobotShould {
 	 */
 	@Test
 	public void move1DownOnMoveNEGATIVE1Direction0() {
-		checkMovement(1, 0);
+		checkMovement(1, CardinalDirection.NORTH);
 	}
 
 	@Test
 	public void move1LeftOnMoveNEGATIVE1Direction1() {
-		checkMovement(1, 1);
+		checkMovement(1, CardinalDirection.EAST);
 	}
 
 	@Test
 	public void move1UpOnMoveNEGATIVE1Direction2() {
-		checkMovement(1, 2);
+		checkMovement(1, CardinalDirection.SOUTH);
 	}
 
 	@Test
 	public void move1RightOnMoveNEGATIVE1Direction3() {
-		checkMovement(1, 3);
+		checkMovement(1, CardinalDirection.WEST);
 	}
 
 	/**
@@ -94,22 +95,22 @@ public class RobotShould {
 	 */
 	@Test
 	public void move2UpOnMove2Direction0() {
-		checkMovement(2, 0);
+		checkMovement(2, CardinalDirection.NORTH);
 	}
 
 	@Test
 	public void move2RightOnMove2Direction1() {
-		checkMovement(2, 1);
+		checkMovement(2, CardinalDirection.EAST);
 	}
 
 	@Test
 	public void move2DownOnMove2Direction2() {
-		checkMovement(2, 2);
+		checkMovement(2, CardinalDirection.SOUTH);
 	}
 
 	@Test
 	public void move2LeftOnMove2Direction3() {
-		checkMovement(2, 3);
+		checkMovement(2, CardinalDirection.WEST);
 	}
 
 	/**
@@ -117,45 +118,54 @@ public class RobotShould {
 	 */
 	@Test
 	public void move3UpOnMove3Direction0() {
-		checkMovement(3, 0);
+		checkMovement(3, CardinalDirection.NORTH);
 	}
 
 	@Test
 	public void move3RightOnMove3Direction1() {
-		checkMovement(3, 1);
+		checkMovement(3, CardinalDirection.EAST);
 	}
 
 	@Test
 	public void move3DownOnMove3Direction2() {
-		checkMovement(3, 2);
+		checkMovement(3, CardinalDirection.SOUTH);
 	}
 
 	@Test
 	public void move3LeftOnMove3Direction3() {
-		checkMovement(3, 3);
+		checkMovement(3, CardinalDirection.WEST);
 	}
 
 	/**
-	 * ROTATION Clockwise rotation from each direction
+	 * ROTATION
+	 */
+	private void checkRotation(RelativeDirection rotation, CardinalDirection direction) {
+		robot.setDirection(direction);
+		GameMovement.rotate(rotation, robot);
+		assertEquals(CardinalityUtility.getRelativeDirection(rotation, direction), robot.getDirection());
+	}
+
+	/**
+	 * Clockwise rotation from each direction
 	 */
 	@Test
 	public void rotate1ClockWiseOnRotate1Direction0() {
-		checkRotation(1, 0);
+		checkRotation(RelativeDirection.RIGHT, CardinalDirection.NORTH);
 	}
 
 	@Test
 	public void rotate1ClockWiseOnRotate1Direction1() {
-		checkRotation(1, 1);
+		checkRotation(RelativeDirection.RIGHT, CardinalDirection.EAST);
 	}
 
 	@Test
 	public void rotate1ClockWiseOnRotate1Direction2() {
-		checkRotation(1, 2);
+		checkRotation(RelativeDirection.RIGHT, CardinalDirection.SOUTH);
 	}
 
 	@Test
 	public void rotate1ClockWiseOnRotate1Direction3() {
-		checkRotation(1, 3);
+		checkRotation(RelativeDirection.RIGHT, CardinalDirection.WEST);
 	}
 
 	/**
@@ -163,21 +173,21 @@ public class RobotShould {
 	 */
 	@Test
 	public void rotate1CounterClockWiseOnRotate1Direction0() {
-		checkRotation(-1, 0);
+		checkRotation(RelativeDirection.LEFT, CardinalDirection.NORTH);
 	}
 
 	@Test
 	public void rotate1CounterClockWiseOnRotate1Direction1() {
-		checkRotation(-1, 1);
+		checkRotation(RelativeDirection.LEFT, CardinalDirection.EAST);
 	}
 
 	@Test
 	public void rotate1CounterClockWiseOnRotate1Direction2() {
-		checkRotation(-1, 2);
+		checkRotation(RelativeDirection.LEFT, CardinalDirection.SOUTH);
 	}
 
 	@Test
 	public void rotate1CounterClockWiseOnRotate1Direction3() {
-		checkRotation(-1, 3);
+		checkRotation(RelativeDirection.LEFT, CardinalDirection.WEST);
 	}
 }

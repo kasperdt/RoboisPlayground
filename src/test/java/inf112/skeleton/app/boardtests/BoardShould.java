@@ -14,16 +14,15 @@ import inf112.skeleton.app.objects.Board;
  * Unit test for simple App.
  */
 public class BoardShould {
-    Board brd;
-    int standardBoardWidth;
-    int standardBoardHeight;
+    private Board brd;
+    private int standardBoardWidth;
+    private int standardBoardHeight;
 
     @Before
     public void instantiateBoard() {
         try {
-            brd = new Board();
+            brd = new Board("b0.csv");
         } catch (FileNotFoundException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
         standardBoardWidth = brd.getWidth();
